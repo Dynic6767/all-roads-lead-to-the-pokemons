@@ -1,1 +1,1 @@
-token = "8497488826:AAEMr6T9OLsgdSRTkMCNvecxuxaooA2tg8M"
+token = "womp womp no free tokens"
