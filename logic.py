@@ -1,6 +1,7 @@
 from random import randint
 import requests
 import random
+from datetime import datetime, timedelta
 
 classes = ['Wizard', 'Fighter']
 
@@ -9,7 +10,8 @@ class Pokemon:
     # Инициализация объекта (конструктор)
     def __init__(self, pokemon_trainer):
 
-        self.pokemon_trainer = pokemon_trainer   
+        self.pokemon_trainer = pokemon_trainer 
+        self.last_feed_time=datetime.now()  
         self.level = random.randint(1, 100)
         self.pokemon_number = randint(1,1000)
         self.hp = randint(1,267)
@@ -46,6 +48,8 @@ class Pokemon:
         types = ["Fire", "Water", "Grass", "Electric", "Psychic"]
         return random.choice(types)
 
+
+
     def attack(self, enemy):
         if isinstance(enemy, Wizard): # Check that enemy is a Wizard data type (is an instance of the Wizard class)
             enemy.power -= 10
@@ -53,10 +57,10 @@ class Pokemon:
             if chance == 1:
                   enemy.power == 0
                   return "Покемон-волшебник применил щит в сражении"
-        #if isinstance(enemy, Fighter):
-            #enemy.power += 10
-        #if enemy.level > enemy.level:
-            #enemy.power +=15
+        if isinstance(enemy, Fighter):
+            enemy.power += 10
+        if enemy.level > enemy.level:
+            enemy.power +=15
         if enemy.hp > self.power:
             enemy.hp -= self.power
             return f"Сражение @{self.pokemon_trainer} с @{enemy.pokemon_trainer}"
@@ -71,10 +75,41 @@ class Pokemon:
     def show_img(self):
         return self.img
 
+    def feed(self, feed_interval = 20, hp_increase = 10 ):
+        current_time = datetime.now()  
+        delta_time = timedelta(seconds=feed_interval)  
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Здоровье покемона увеличено. Текущее здоровье: {self.hp}"
+        else:
+            return f"Следующее время кормления покемона: {self.last_feed_time+delta_time}"
+    
 class Wizard(Pokemon):
-    pass
+    def feed(self, feed_interval = 15, hp_increase = 20 ):
+        current_time = datetime.now()  
+        delta_time = timedelta(seconds=feed_interval)  
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Здоровье покемона увеличено. Текущее здоровье: {self.hp}"
+        else:
+            return f"Следующее время кормления покемона: {self.last_feed_time+delta_time}"
 
 class Fighter(Pokemon):
+    def feed(self, feed_interval = 25, hp_increase = 7 ):
+        current_time = datetime.now()  
+        delta_time = timedelta(seconds=feed_interval)  
+        if (current_time - self.last_feed_time) > delta_time:
+            self.hp += hp_increase
+            self.last_feed_time = current_time
+            return f"Здоровье покемона увеличено. Текущее здоровье: {self.hp}"
+        else:
+            return f"Следующее время кормления покемона: {self.last_feed_time+delta_time}"
+    
+    def feed(self):
+        return super().feed(feed_interval = 7)
+        
     def attack(self, enemy):
         super_power = randint(5,15)
         self.power += super_power
@@ -91,7 +126,5 @@ if __name__ == '__main__':
     print(fighter.info())
     print()
     print(fighter.attack(wizard))
-
-
 
 
